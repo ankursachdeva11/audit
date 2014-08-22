@@ -897,7 +897,7 @@ function confirmDeleteProject(Button,pid){
                     $.mobile.showPageLoadingMsg(true);
                 },
                 complete: function() {
-                    
+                     $.mobile.hidePageLoadingMsg();
                 },
 		success: showProjectlist,
 		error: function (request,error) {
