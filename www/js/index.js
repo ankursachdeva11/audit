@@ -897,15 +897,15 @@ function confirmDeleteProject(Button,pid){
                     $.mobile.showPageLoadingMsg(true);
                 },
                 complete: function() {
-                    $.mobile.hidePageLoadingMsg();
+                    
                 },
-		success: showProjects,
+		success: showProjectlist,
 		error: function (request,error) {
 			alert('Network error has occurred please try again!');
 		}
 	});
 	
-	function showProjects(result) {
+	function showProjectlist(result) {
 	 
 	 var modeValue = window.localStorage.getItem("mode");
 	 var value = window.localStorage.getItem("userid");
