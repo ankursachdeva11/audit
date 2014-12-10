@@ -1,0 +1,728 @@
+<!DOCTYPE html> 
+<html>
+	<head>
+        <meta charset="UTF-8">
+        <title>Audit and compliance</title>
+        
+        <link href="jquery-mobile/jquery.mobile.theme-1.0.min.css" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+        <link rel="stylesheet" href="css/index.css" type="text/css"/>
+		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="js/jquery.mobile.router.js"></script>
+        <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/SocialSharing.js"></script>
+		<script type="text/javascript" charset="utf-8">
+		
+		
+		document.addEventListener("deviceready", onDeviceReady, false);
+		
+			function onDeviceReady() {
+    		document.addEventListener("backbutton", onBackKeyDown, false); //Listen to the User clicking on the back button
+		}
+		
+		function onBackClick(){
+		
+		
+
+		if($.mobile.activePage.is('#pgSignIn')){
+        	navigator.notification.confirm("Are you sure you want to exit ?", onConfirm, "Confirmation", "Yes,No");
+    	}
+    	else if($.mobile.activePage.is('#pgWelcome')){
+			$.mobile.changePage( "#pgSignIn", { transition: "slideup", changeHash: false });
+    	}
+		else if($.mobile.activePage.is('#pgProjects')){
+			$.mobile.changePage( "#pgWelcome", { transition: "slideup", changeHash: false });
+    	}
+    	else if($.mobile.activePage.is('#pgRegister')){
+			$.mobile.changePage( "#pgWelcome", { transition: "slideup", changeHash: false });
+    	}
+		else if($.mobile.activePage.is('#pgModules')){
+			$.mobile.changePage( "#pgProjects", { transition: "slideup", changeHash: false });
+    	}
+    	else if($.mobile.activePage.is('#pgInprogressAndCompleted')){
+			$.mobile.changePage( "#pgModules", { transition: "slideup", changeHash: false });
+    	}
+		else if($.mobile.activePage.is('#pgSection')){
+			if(window.localStorage.getItem("mode")=='new'){
+			$.mobile.changePage( "#pgModules", { transition: "slideup", changeHash: false });
+			}
+			else{
+			$.mobile.changePage( "#pgInprogressAndCompleted", { transition: "slideup", changeHash: false });
+			}
+			
+    	}
+		else if($.mobile.activePage.is('#pgAudit_Risk_Profiling')){
+			$.mobile.changePage( "#pgSection", { transition: "slideup", changeHash: false });
+    	}
+   // e.preventDefault();
+     
+    // Prompt the user with the choice
+		
+		}		
+
+
+		function onBackKeyDown(e) {
+
+		if($.mobile.activePage.is('#pgSignIn')){
+        	navigator.notification.confirm("Are you sure you want to exit ?", onConfirm, "Confirmation", "Yes,No");
+    	}
+    	else if($.mobile.activePage.is('#pgWelcome')){
+			$.mobile.changePage( "#pgSignIn", { transition: "slideup", changeHash: false });
+    	}
+		else if($.mobile.activePage.is('#pgProjects')){
+			$.mobile.changePage( "#pgWelcome", { transition: "slideup", changeHash: false });
+    	}
+    	else if($.mobile.activePage.is('#pgRegister')){
+			$.mobile.changePage( "#pgWelcome", { transition: "slideup", changeHash: false });
+    	}
+		else if($.mobile.activePage.is('#pgModules')){
+			$.mobile.changePage( "#pgProjects", { transition: "slideup", changeHash: false });
+    	}
+    	else if($.mobile.activePage.is('#pgInprogressAndCompleted')){
+			$.mobile.changePage( "#pgModules", { transition: "slideup", changeHash: false });
+    	}
+		else if($.mobile.activePage.is('#pgSection')){
+			if(window.localStorage.getItem("mode")=='new'){
+			$.mobile.changePage( "#pgModules", { transition: "slideup", changeHash: false });
+			}
+			else{
+			$.mobile.changePage( "#pgInprogressAndCompleted", { transition: "slideup", changeHash: false });
+			}
+			
+    	}
+		else if($.mobile.activePage.is('#pgAudit_Risk_Profiling')){
+			$.mobile.changePage( "#pgSection", { transition: "slideup", changeHash: false });
+    	}
+    e.preventDefault();
+     
+    // Prompt the user with the choice
+}
+
+function onConfirm(button) {
+    if(button==2){//If User selected No, then we just do nothing
+        return;
+    }
+	else{
+        navigator.app.exitApp();// Otherwise we quit the app.
+    }
+}
+	
+	 function captureImg(qid,did,fid){
+	 	
+	 	// Retrieve image file location from specified source
+            navigator.camera.getPicture(function(imageURI){
+            	uploadPhoto(imageURI,qid,did,fid);
+            }, function(message) {
+			alert('get picture failed');
+		},{
+			quality: 50, 
+			destinationType: navigator.camera.DestinationType.FILE_URI,
+			
+		}
+            );
+ 
+	 
+	 	}
+	
+	 function getImage(qid,did,fid) {
+ 
+ 			// Retrieve image file location from specified source
+            navigator.camera.getPicture(function(imageURI){
+            	uploadPhoto(imageURI,qid,did,fid);
+            }, function(message) {
+			alert('get picture failed');
+		},{
+			quality: 50, 
+			destinationType: navigator.camera.DestinationType.FILE_URI,
+			sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+		}
+            );
+ 
+        }
+ 
+        function uploadPhoto(imageURI,qid,did,fid) {
+        	$.mobile.showPageLoadingMsg(true);
+            var options = new FileUploadOptions();
+            options.fileKey="file";
+            options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
+            options.mimeType="image/jpeg";
+ 
+            var params = new Object();
+            params.value1 = "test";
+            params.value2 = "param";
+ 
+            options.params = params;
+            options.chunkedMode = false;
+ 
+            var ft = new FileTransfer();
+            ft.upload(imageURI, "http://www.qhse-riskapplications.com/m/fileUploadTest.php?qid="+ qid +"&did="+ did +"&fid="+ fid, function(r){
+            win(r,qid,did,fid);
+            }, fail, options);
+        }
+ 
+        function win(r,qid,did,fid) {
+			$.mobile.hidePageLoadingMsg();
+            console.log("Code = " + r.responseCode);
+            console.log("Response = " + r.response);
+            console.log("Sent = " + r.bytesSent);
+            var uploadStatus = '#uploadStatus'+ qid;
+            $(uploadStatus).append("Fill uploaded successfully.");
+         	 $("#pop"+ qid).empty();
+    		// alert("File upload successfully.");
+            
+        }
+ 
+        function fail(error) {
+        	$.mobile.hidePageLoadingMsg();
+            alert("An error has occurred: Code = " + error.code);
+            
+    		
+        }
+        
+        
+     function selectSrc(qid,did,fid) {
+         
+	 	var updatedText = '<input type="button" value="Camera" data-theme="b" onclick="captureImg('+ qid +','+ did +','+ fid +')" /> <input type="button" value="Gallery" data-theme="b" onclick="getImage('+ qid +','+ did +','+ fid +')" />';
+	 	
+	 	 $("#pop"+ qid).html(updatedText);                    
+
+     	 
+	 		 	
+	 }	
+	 function selectLogo(){
+	 
+	 	// Retrieve image file location from specified source
+            navigator.camera.getPicture(function(imageURI){
+            	
+            	uploadLogo(imageURI);
+            }, function(message) {
+			alert('get picture failed');
+		},{
+			quality: 50, 
+			destinationType: navigator.camera.DestinationType.FILE_URI,
+			sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+		}
+            );
+	 
+	 	}
+	  function uploadLogo(imageURI){
+	  
+	  		var value = window.localStorage.getItem("userid");
+	  		
+	  		
+        	$.mobile.showPageLoadingMsg(true);
+        	
+            var options = new FileUploadOptions();
+            options.fileKey="file";
+            options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
+            options.mimeType="image/jpeg";
+ 
+            var params = new Object();
+            params.value1 = "test";
+            params.value2 = "param";
+ 
+            options.params = params;
+            options.chunkedMode = false;
+ 
+            var ft = new FileTransfer();
+            ft.upload(imageURI, "http://www.qhse-riskapplications.com/m/logoUploadTest.php?uid="+ value, function(r){
+            alert("Uploaded Successfully");
+            $.mobile.hidePageLoadingMsg();
+            }, fail, options);
+	  
+	  
+	  }
+	  
+	  
+	 
+	 	</script>
+		<style>
+			.file_browse_wrapper {
+				width: 145px;
+				height: 36px;
+				background: url('img/file_browse_normal_copy.png') 0 0 no-repeat;
+				border:none;
+				overflow:hidden;
+			}
+			.logo_browse_wrapper {
+				width: 145px;
+				height: 36px;
+				background: url('img/logo_browse_normal.png') 0 0 no-repeat;
+				border:none;
+				overflow:hidden;
+			}
+			.file_browse_wrapper:active {
+				background: url('img/file_browse_pressed_copy.png') 0 0 no-repeat;
+			}
+			
+			.file_browse{
+				margin-left:-145px;
+				opacity:0.0;
+				-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+				filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+			}
+		
+		</style>
+   	
+	</head> 
+	<body onLoad="onBodyLoad()">
+    	<!--
+        #####################################
+        ####	PANEL	#####################
+        #####################################
+        -->
+		<!--<div data-role="panel" id="leftPanel" data-position="left" data-display="push">
+    		<ul id="panellist" data-role="listview">       
+            </ul>
+  		</div>--><!-- /panel -->
+        
+        <!--
+        #####################################
+        ####	SIGN IN	#####################
+        #####################################
+        -->
+        <div data-role="page" id="pgSignIn">
+    
+            <!-- start header -->
+            <div data-position="fixed" data-role="header" data-theme="b">
+                <h1>Sign in</h1>
+            </div>
+            <!-- end header -->
+            
+            <!-- start content -->
+            <div data-role="content">	
+                <div id="Login" data-theme="a" class="ui-corner-all">
+                    <form method="post" id="frmCheckLogin">
+                        <div style="padding:10px 20px;">
+                          <h3>Please sign in</h3>
+                          
+                          <label for="un" class="ui-hidden-accessible">email:</label>
+                          <input type="text" name="user" id="user" value="sanjaydewan" placeholder="e-mail">
+                          <label for="pw" class="ui-hidden-accessible">password:</label>
+                          <input type="password" name="pass" id="pass" value="9899111109" placeholder="password">
+                           
+                            <button data-theme="b" id="submit" type="submit"  data-inline="true" data-icon="check">Sign in</button>
+                           <hr/>
+                    <a data-role="button" href="#pgSignUp" data-theme="b" id="signUp">Click here to Sign up</a>
+                        </div>
+                    </form>
+
+                </div> 
+                               		
+            </div>
+            <!-- end content -->
+            
+        </div>  
+        <!--
+        #####################################
+        ####	/ SIGN IN	#################
+        #####################################
+        -->
+           <!--
+        #####################################
+        ####	SIGN UP	#####################
+        #####################################
+        -->
+        <div data-role="page" id="pgSignUp">
+    
+            <!-- start header -->
+            <div data-position="fixed" data-role="header" data-theme="b">
+                <h1>Sign Up</h1>
+            </div>
+            <!-- end header -->
+            
+            <!-- start content -->
+            <div data-role="content">	
+                <div id="Login" data-theme="a" class="ui-corner-all">
+                    <form method="post" id="frmSignUp">
+                        <div style="padding:10px 20px;">
+                          <h3>Please sign up</h3>
+                          
+                          <label for="un" class="ui-hidden-accessible">user name:</label>
+                          <input type="text" name="user_name" id="user" value="" placeholder="User Name">
+                          <label for="email" class="ui-hidden-accessible">email:</label>
+                          <input type="text" name="email" id="email" value="" placeholder="e-mail">
+                          <label for="init" class="ui-hidden-accessible">initials:</label>
+                          <input type="text" name="init" id="init" value="" placeholder="Initials">
+                           
+                            <button data-theme="b" id="frmRegister" type="submit"  data-inline="true" data-icon="plus">Sign up</button>
+                                                       <hr/>
+                    <a data-role="button" href="#pgSignIn" data-theme="b" id="signUp">Click here to Sign In</a>
+                        </div>
+                    </form>
+
+                </div> 
+                               		
+            </div>
+            <!-- end content -->
+            
+        </div>  
+        <!--
+        #####################################
+        ####	/ SIGN UP	#################
+        #####################################
+        -->
+		<!--
+        #####################################
+        ####	WELCOME PAGE   #####################
+        #####################################
+        -->
+        <div data-role="page" id="pgWelcome">
+    
+            <!-- start header -->
+            <div data-position="fixed" data-role="header" data-theme="b">
+                <a data-role="button" data-mini="true" onclick="onBackClick()" class="ui-btn-left ui-icon-logout" href="#">Back</a>
+                <h1>Welcome to QHSE</h1>
+				<a data-role="button" id="iconPanel" data-mini="true" class="ui-btn-right ui-icon-logout" href="#pgSignIn">Sign out</a>
+            </div>
+            <!-- end header -->
+            
+            <!-- start content -->
+            <div data-role="content" style="padding:25px;">	
+                
+				<a href="#pgProjects" data-role="button" id="projectNew" data-theme="b" data-mini="true">Start A New Project</a><br/>
+				<a href="#pgProjects" data-role="button" id="projectInUse"  data-theme="b" data-mini="true" >View Your In Progress Projects</a><br/>
+				<a href="#pgProjects" data-role="button" id="projectCompleted"  data-theme="b" data-mini="true">View Your Completed Projects</a><br/>
+				<a href="#pgProjects" data-role="button" id="projectImport" data-theme="b" data-mini="true">Import From Templates</a><br/>
+                <a href="#pgPurchaseProducts" data-role="button" id="purchaseProduct" data-theme="b" data-mini="true">Purchase Products</a><br/>
+				<a href="#pgRegister" data-role="button"  data-theme="b" data-mini="true">Register Your Company</a><br/>
+				
+            </div>
+            <!-- end content -->
+            
+        </div>  
+        <!--
+        #####################################
+        ####	/ WELCOME PAGE	#################
+        #####################################
+        -->
+		   <!--
+        #####################################
+        ####	REGISTER YOUR COMPANY   #####
+        #####################################
+        -->
+        <div data-role="page" id="pgRegister">
+    
+            <!-- start header -->
+            <div data-position="fixed" data-role="header" data-theme="b">
+            <a data-role="button" data-mini="true" onclick="onBackClick()" class="ui-btn-left ui-icon-logout" href="#">Back</a>
+                <h1>Register Your Company</h1>
+				<a data-role="button" id="iconPanel" data-mini="true" class="ui-btn-right ui-icon-logout" href="#pgSignIn">Sign out</a>
+            </div>
+            <!-- end header -->
+            
+            <!-- start content -->
+            <div data-role="content" style="padding:25px;">	
+                
+                <form name="frmRegister" id="frmRegister">
+                	Company Name:<br/>
+					<input type="text" name="fldCmpnyName" id="txtCompanyName" data-mini="true" />
+                
+                	Address:<br/>
+					<input type="text" name="fldStreetAddress" id="txtAddress" data-mini="true" />
+					
+					Street Address:<br/>
+					<input type="text" name="fldAddressLine2" id="txtStreetAddress" data-mini="true" />
+					
+					City:<br/>
+					<input type="text" name="fldCity" id="txtCity" data-mini="true" />
+					
+					State / Province / Region:<br/>
+					<input type="text" name="fldState" id="txtState" data-mini="true" />
+					
+					Country: <span id="oldCountry"></span><br/>
+					<select name="fldCountry" id="txtCountry" data-mini="true">
+					<option value=''>Select Country</option>
+					</select> 
+				
+					ZipCode:<br/>
+					<input type="text" name="fldZip" id="txtZip" data-mini="true" />
+					
+					Change Password:<br/>
+					<input type="password" name="fldPassword" id="txtPassword" data-mini="true" />
+					
+					<h3>Logo</h3>
+					Please upload your company logo.
+					<hr/>
+					
+					Please choose logo to upload:<br/>
+					<div class="logo_browse_wrapper" onclick="selectLogo()" data-rel="popup"></div>
+						 <span id="uploadLogoStatus"></span>
+						
+						<div data-role="popup" id="popLogo"></div>
+
+					
+                 <button data-theme="b" id="btnRegister" type="submit" data-mini="true">Submit</button>
+                </form>
+    			
+            </div>
+            <!-- end content -->
+            
+        </div>  
+        <!--
+        #####################################
+        ####  / REGISTER YOUR COMPANY	#####
+        #####################################
+        -->
+        
+          <!--
+        #####################################
+        ####	PURCHASE PRODUCTS	#########
+        #####################################
+        -->
+        <div data-role="page" id="pgPurchaseProducts" data-add-back-btn="false">
+            <!--<div data-role="panel" id="leftPanel" data-position="left" data-display="push">
+                
+            </div>--><!-- /panel -->
+        
+                <!-- start header -->
+                <div data-position="fixed" data-role="header" data-theme="b">
+                
+    	           <a data-role="button" data-mini="true" onclick="onBackClick()" class="ui-btn-left ui-icon-logout" href="#">Back</a>
+                   <h1 id="purchaseProductHeader">Purchase Products</h1>
+                   <a data-role="button" id="iconPanel" data-mini="true" class="ui-btn-right ui-icon-logout" href="#pgSignIn">Sign out</a>
+                    
+                </div>
+                <!-- end header -->
+            
+                <!-- start content -->
+                <div id="purchase_project_content" class="content" data-role="content">
+               			<!-- <ul data-inset="true"> -->
+                        <ul id="purchaseProjectlist" data-role="listview" data-filter="true" data-filter-placeholder="Search projects...">       
+                        </ul>
+                    
+               </div>
+                <!-- end content -->
+            
+            </div>  
+        <!--
+        #####################################
+        ####	/ PURCHASE PRODUCTS	#########
+        #####################################
+        -->
+        
+        
+        <!--
+        #####################################
+        ####	PROJECTS	#################
+        #####################################
+        -->
+        <div data-role="page" id="pgProjects" data-add-back-btn="false">
+            <!--<div data-role="panel" id="leftPanel" data-position="left" data-display="push">
+                
+            </div>--><!-- /panel -->
+        
+                <!-- start header -->
+                <div data-position="fixed" data-role="header" data-theme="b">
+                
+    	           <a data-role="button" data-mini="true" onclick="onBackClick()" class="ui-btn-left ui-icon-logout" href="#">Back</a>
+                   <h1 id="projectHeader"></h1>
+                   <a data-role="button" id="iconPanel" data-mini="true" class="ui-btn-right ui-icon-logout" href="#pgSignIn">Sign out</a>
+                    
+                </div>
+                <!-- end header -->
+            
+                <!-- start content -->
+                <div id="project_content" class="content" data-role="content">
+               			<!-- <ul data-inset="true"> -->
+                        <ul id="projectlist" data-role="listview" data-filter="true" data-filter-placeholder="Search projects...">       
+                        </ul>
+                    
+               </div>
+                <!-- end content -->
+            
+            </div>  
+        <!--
+        #####################################
+        ####	/ PROJECTS	#################
+        #####################################
+        -->
+    
+        <!--
+        #####################################
+        ####	MODULES	#####################
+        #####################################
+        -->
+        <div data-role="page" id="pgModules" data-add-back-btn="false">
+            <!--<div data-role="panel" id="leftPanel" data-mini="true" data-position="left" data-display="push">
+                <p>hello</p>
+            </div>--><!-- /panel -->
+        
+                <!-- start header -->
+                <div data-position="fixed" data-role="header" data-theme="b">
+                
+                <a data-role="button" data-mini="true" onclick="onBackClick()" class="ui-btn-left ui-icon-logout" href="#">Back</a>
+                <h1 id="headingProduct">Products</h1>
+                <a data-role="button" id="iconPanel" data-mini="true" class="ui-btn-right ui-icon-logout" href="#pgSignIn">Sign out</a>
+                </div>
+                <!-- end header -->
+            
+                <!-- start content -->
+                <div id="project_content" class="content" data-role="content" data-expanded-icon="carat-u">
+                    <!-- <div id="section_content" class="content" data-role="content" data-expanded-icon="carat-u">-->
+                        <!-- <ul data-inset="true"> -->
+                        <ul data-role="listview" class="ui-icon-alt" id="modulelist" data-add-back-btn="true">
+                        
+                        </ul>          
+                    <!-- </div> -->
+            
+                	<!--<div data-role="collapsible" data-collapsed="false" data-theme="b" data-content-theme="c">
+                    
+                        <h4>Modules</h4>
+                        
+                        <ul id="modulelist" data-role="listview" data-inset="false"> 
+                           <!-- <li><a href="#safety_audit_checklist" style="white-space:normal">IS 14489 :: Safety Audit Checklist</a></li>
+                        </ul>
+                        
+                    </div>
+					<div data-role="collapsible" data-collapsed="false" data-theme="b" data-content-theme="c">
+                    
+                        <h4>T.M.S.A.</h4>
+                        
+                        <ul id="modulelist" data-role="listview" data-inset="false"> 
+                            <li><a href="#pgSection" style="white-space:normal">T.M.S.A. :: Audit and Risk Profiling</a></li>
+                        </ul>
+                        
+                    </div>-->
+                    
+                    
+               </div>
+                <!-- end content -->
+            
+            </div>  
+        <!--
+        #####################################
+        ####	/ MODULES	#################
+        #####################################
+        -->
+        
+        
+        
+         <!--
+        #####################################################################
+        #################	INPROGRESS / COMPLETED	#########################
+        #####################################################################
+        -->
+        <div data-role="page" id="pgInprogressAndCompleted" data-add-back-btn="false">
+            <div data-role="panel" id="leftPanel" data-position="left" data-display="push">
+                <p>Inprogress / Completed</p>
+            </div><!-- /panel -->
+        
+            <!-- start header -->
+            <div data-position="fixed" data-role="header" data-theme="b">
+            
+            <a data-role="button" data-mini="true" onclick="onBackClick()" class="ui-btn-left ui-icon-logout" href="#">Back</a>
+                <h1 id="headingInprogressCompleted">Inprogress / Completed </h1>
+   			<a data-role="button" id="iconPanel" data-mini="true" class="ui-btn-right ui-icon-logout" href="#pgSignIn">Sign out</a>             
+            </div>
+            <!-- end header -->
+        
+            <!-- start content -->
+            <div id="inprogressAndCompleted_content" class="content" data-role="content" data-expanded-icon="carat-u">
+                
+                <ul data-role="listview" class="ui-icon-alt" id="uiInprogressAndCompleted">
+          
+                </ul>          
+           	</div>
+           
+            <!-- end content -->
+            
+        </div>  
+       <!--
+        #####################################################################
+        #################	/INPROGRESS / COMPLETED	#########################
+        #####################################################################
+        -->
+        
+        
+        <!--
+        #####################################################################
+        ####	SECTIONS	#################################################
+        #####################################################################
+        -->
+        <div data-role="page" id="pgSection" data-add-back-btn="false">
+            <div data-role="panel" id="leftPanel" data-position="left" data-display="push">
+                <p>Sections</p>
+            </div><!-- /panel -->
+        
+            <!-- start header -->
+            <div data-position="fixed" data-role="header" data-theme="b">
+            
+            <a data-role="button" data-mini="true" onclick="onBackClick()" class="ui-btn-left ui-icon-logout" href="#">Back</a>
+                <h1 id="headingSections">Sections</h1>
+   			<a data-role="button" id="iconPanel" data-mini="true" class="ui-btn-right ui-icon-logout" href="#pgSignIn">Sign out</a>             
+            </div>
+            <!-- end header -->
+        
+            <!-- start content -->
+            <div id="section_content" class="content" data-role="content" data-expanded-icon="carat-u">
+                
+                <ul data-role="listview" class="ui-icon-alt" id="uiSection">
+          
+                </ul>          
+           	</div>
+           
+            <!-- end content -->
+            
+        </div>  
+        <!--
+        #####################################################################
+        ####	/ SECITONS	#################################################
+        #####################################################################
+        -->
+        
+        <!--
+        #####################################################################
+        ####	TMSA :: AUDIT AND RISK PROFILING FORM	#####################
+        #####################################################################
+        -->
+        <div data-role="page" id="pgAudit_Risk_Profiling" data-add-back-btn="false">
+            <div data-role="panel" id="leftPanel" data-position="left" data-display="push">
+                <p>Projects</p>
+            </div><!-- /panel -->
+        
+            <!-- start header -->
+            <div data-position="fixed" data-role="header" data-theme="b">
+            
+            <a data-role="button" data-mini="true" onclick="onBackClick()" class="ui-btn-left ui-icon-logout" href="#">Back</a>
+                <h1>Questionnaire</h1>
+            <a data-role="button" id="iconPanel" data-mini="true" class="ui-btn-right ui-icon-logout" href="#pgSignIn">Sign out</a>    
+            </div>
+            <!-- end header -->
+        
+            <!-- start content -->
+            <div id="project_content" class="content" data-role="content" data-expanded-icon="carat-u">
+            	
+                <form name="frmTMSASubmit" id="frmTMSASubmit">
+            		
+                        
+                        <!-- <ul data-inset="true"> -->
+                        <ul data-role="listview" id="uiAudit_Risk_Profiling">
+                                                  
+                        </ul>
+                                        
+                       <div class="ui-block-b">
+                       	
+                            <button data-theme="b" id="btnTMSASubmit" type="submit"  data-inline="true" data-mini="true">Save as draft</button>
+                            <button data-theme="b" id="btnTMSASPSubmit" type="submit" data-inline="true" data-mini="true">Save & Publish</button>
+                        	
+                        </div>
+
+                   
+                </form>
+                
+           </div>
+            <!-- end content -->
+            
+        </div>  
+        <!--
+        #####################################################################
+        ####	/ TMSA :: AUDIT AND RISK PROFILING FORM	#####################
+        #####################################################################
+        -->
+        
+        
+</body>
+</html>
